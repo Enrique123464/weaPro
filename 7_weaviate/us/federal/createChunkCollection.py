@@ -45,8 +45,8 @@ try:
             Configure.Vectors.text2vec_ollama(
                 name="article_content_vector",
                 source_properties=["content", "article"],#source_properties=["content"],
-                #api_endpoint="http://host.docker.internal:11434",  # If using Docker, use this to contact your local Ollama instance
-                api_endpoint="http://172.17.0.1:11434",
+                api_endpoint="http://host.docker.internal:11434",  # If using Docker, use this to contact your local Ollama instance
+                #api_endpoint="http://172.17.0.1:11434",
                 model="qwen3-embedding:0.6b",  # The model to use, e.g. "nomic-embed-text"
                 vectorize_collection_name=False,
             )
