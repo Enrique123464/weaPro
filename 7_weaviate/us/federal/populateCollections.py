@@ -144,7 +144,7 @@ def process_all_json_files(
 # Main execution
 if __name__ == "__main__":
     # Configuration
-    json_directory = "CFR/testChunks"
+    json_directory = "/root/data/testChunks"
     articles_collection_name = "cfr_articles"
     chunks_collection_name = "cfr_chunks"
     
