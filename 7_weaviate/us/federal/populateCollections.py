@@ -38,7 +38,8 @@ def populate_collections_batch(
     
     # Step 1: Insert ALL articles first
     article_uuids = {}  # Map article_name to UUID
-    
+    total_articles = len(articles_data)
+
     with articles_collection.batch.dynamic() as article_batch:
         for idx, article_data in enumerate(articles_data, 1):
             article_uuid = article_batch.add_object(
@@ -50,11 +51,18 @@ def populate_collections_batch(
             )
             article_uuids[article_data["article_name"]] = article_uuid
             
+            # Print progress every 10% or every 100 articles, whichever is smaller
+            if idx % max(1, min(100, total_articles // 10)) == 0 or idx == total_articles:
+                print(f"  Articles: {idx}/{total_articles} ({idx/total_articles*100:.1f}%)")
+            
     print(f"✅ Inserted {len(article_uuids)} articles")
-    
+
     # Step 2: Now insert ALL chunks (articles are guaranteed to exist)
     chunk_count = 0
-    
+    # Pre-calculate total chunks for progress tracking
+    total_chunks = sum(len(article_data.get("sub_chunks", [])) for article_data in articles_data)
+    print(f"Inserting {total_chunks} chunks...")
+
     with chunks_collection.batch.dynamic() as chunk_batch:
         for article_data in articles_data:
             article_name = article_data["article_name"]
@@ -73,7 +81,11 @@ def populate_collections_batch(
                     }
                 )
                 chunk_count += 1
-    
+                
+                # Print progress every 10% or every 500 chunks, whichever is smaller
+                if chunk_count % max(1, min(500, total_chunks // 10)) == 0 or chunk_count == total_chunks:
+                    print(f"  Chunks: {chunk_count}/{total_chunks} ({chunk_count/total_chunks*100:.1f}%)")
+
     print(f"✅ Inserted {chunk_count} chunks")
     print(f"  Articles: {len(article_uuids)}")
     print(f"  Chunks: {chunk_count}\n")
