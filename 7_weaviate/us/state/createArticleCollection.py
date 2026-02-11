@@ -1,7 +1,7 @@
 import weaviate
 from weaviate.classes.config import Configure, Property, DataType
 
-collection_name = "california_1"
+collection_name = "california_articles"
 
 # Connect to Weaviate
 client = weaviate.connect_to_local()
@@ -20,23 +20,8 @@ try:
                 data_type=DataType.TEXT
             ),
             Property(
-                name="priorContent",
-                data_type=DataType.TEXT, 
-                skip_vectorization=True
-            ),
-            Property(
-                name="contentAndPriorConcatenated",
-                data_type=DataType.TEXT
-            ),
-            Property(
                 name="article",
-                data_type=DataType.TEXT, 
-                skip_vectorization=True
-            ),
-            Property(
-                name="fromArticle",
-                data_type=DataType.TEXT_ARRAY,
-                skip_vectorization=True
+                data_type=DataType.TEXT_ARRAY, 
             ),
             Property(
                 name="document",
@@ -46,8 +31,8 @@ try:
         ],
         vector_config=[
             Configure.Vectors.text2vec_ollama(
-                name="content_vector",
-                source_properties=["content"],
+                name="article_content_vector",
+                source_properties=["content", "article"],#source_properties=["content"],
                 api_endpoint="http://host.docker.internal:11434",  # If using Docker, use this to contact your local Ollama instance
                 model="qwen3-embedding:0.6b",  # The model to use, e.g. "nomic-embed-text"
                 vectorize_collection_name=False,
